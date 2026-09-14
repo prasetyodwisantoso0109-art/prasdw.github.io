@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prasetyo Dwi Santoso</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: #f8fafc;
+      color: #0f172a;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      background: white;
+      padding: 15px 20px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      color: #111827;
+      font-size: 20px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .nav-menu a {
+      color: #374151;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .nav-menu a:hover {
+      color: #2563eb;
+    }
+
+    .menu-button {
+      display: none;
+      font-size: 25px;
+      cursor: pointer;
+    }
+
+    /* BERANDA */
+    .hero {
+      padding: 60px 20px;
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-container {
+      max-width: 1000px;
+      width: 100%;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+    }
+
+    .hero-text {
+      flex: 1;
+    }
+
+    .greeting {
+      display: inline-block;
+      background: #dbeafe;
+      color: #2563eb;
+      padding: 8px 15px;
+      border-radius: 20px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      line-height: 1.2;
+      margin-bottom: 15px;
+    }
+
+    .highlight {
+      color: #2563eb;
+    }
+
+    .hero h2 {
+      color: #64748b;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      color: #475569;
+      line-height: 1.7;
+      margin-bottom: 25px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 12px 20px;
+      color: white;
+      background: #2563eb;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .button:hover {
+      background: #1d4ed8;
+    }
+
+    .hero-image {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .hero-image img {
+      width: 280px;
+      height: 280px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 6px solid white;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* PORTOFOLIO */
+    .portfolio {
+      background: white;
+      padding: 70px 20px;
+      text-align: center;
+    }
+
+    .section-title {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .section-description {
+      color: #64748b;
+      margin-bottom: 35px;
+    }
+
+    .certificate-container {
+      max-width: 1000px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .certificate-card {
+      background: #f8fafc;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .certificate-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 7px;
+    }
+
+    /* KONTAK */
+    .contact {
+      padding: 70px 20px;
+      text-align: center;
+      background: #f8fafc;
+    }
+
+    .contact-container {
+      max-width: 600px;
+      margin: auto;
+      display: grid;
+      gap: 15px;
+    }
+
+    .contact-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .contact-card h3 {
+      margin-bottom: 8px;
+    }
+
+    .contact-card p {
+      color: #64748b;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #0f172a;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* TAMPILAN HP */
+    @media screen and (max-width: 768px) {
+      .menu-button {
+        display: block;
+      }
+
+      .nav-menu {
+        display: none;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background: white;
+        padding: 20px;
+        text-align: center;
+        flex-direction: column;
+        gap: 20px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .nav-menu.active {
+        display: flex;
+      }
+
+      .hero {
+        padding: 45px 20px;
+      }
+
+      .hero-container {
+        flex-direction: column-reverse;
+        text-align: center;
+      }
+
+      .hero-image img {
+        width: 210px;
+        height: 210px;
+      }
+
+      .hero h1 {
+        font-size: 30px;
+      }
+
+      .hero h2 {
+        font-size: 20px;
+      }
+
+      .certificate-container {
+        grid-template-columns: 1fr;
+      }
+
+      .section-title {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="#beranda" class="logo">Prasetyo</a>
+
+      <div class="menu-button" onclick="toggleMenu()">
+        ☰
+      </div>
+
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="#beranda" onclick="closeMenu()">Beranda</a></li>
+        <li><a href="#portfolio" onclick="closeMenu()">Portofolio</a></li>
+        <li><a href="#kontak" onclick="closeMenu()">Kontak</a></li>
+      </ul>
+    </div>
+  </nav>
+
+
+  <!-- BERANDA -->
+  <section class="hero" id="beranda">
+    <div class="hero-container">
+
+      <div class="hero-text">
+        <span class="greeting">Halo, Nama Saya</span>
+
+        <h1>
+          Prasetyo
+          <span class="highlight">Dwi Santoso</span>
+        </h1>
+
+        <h2>Pelajar</h2>
+
+        <p>
+          Halo, saya Prasetyo Dwi Santoso.
+          Saya adalah seorang pelajar yang memiliki
+          ketertarikan terhadap teknologi, pemrograman,
+          desain website, dan dunia digital.
+        </p>
+
+        <a href="#portfolio" class="button">
+          Lihat Portofolio
+        </a>
+      </div>
+
+      <div class="hero-image">
+        <img src="pras.jpg" alt="Foto Prasetyo Dwi Santoso">
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- PORTOFOLIO -->
+  <section class="portfolio" id="portfolio">
+    <h2 class="section-title">Sertifikat Saya</h2>
+
+    <p class="section-description">
+      Koleksi sertifikat yang saya miliki.
+    </p>
+
+    <div class="certificate-container">
+
+      <div class="certificate-card">
+        <img src="sertifikat.jpg" alt="Sertifikat 1">
+      </div>
+
+      
+
+    </div>
+  </section>
+
+
+  <!-- KONTAK -->
+  <section class="contact" id="kontak">
+    <h2 class="section-title">Kontak Saya</h2>
+
+    <p class="section-description">
+      Informasi kontak saya.
+    </p>
+
+    <div class="contact-container">
+
+      <div class="contact-card">
+        <h3>📧 Email</h3>
+        <p>prasetyodwi0901@gmail.com</p>
+      </div>
+
+      <div class="contact-card">
+        <h3>📱 WhatsApp</h3>
+        <p>085155474763</p>
+      </div>
+
+      <div class="contact-card">
+        <h3>📍 Lokasi</h3>
+        <p>Isi lokasi kamu di sini</p>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Prasetyo Dwi Santoso</p>
+  </footer>
+
+
+  <!-- JAVASCRIPT -->
+  <script>
+    function toggleMenu() {
+      const navMenu = document.getElementById("navMenu");
+      navMenu.classList.toggle("active");
+    }
+
+    function closeMenu() {
+      const navMenu = document.getElementById("navMenu");
+      navMenu.classList.remove("active");
+    }
+  </script>
+
+</body>
+</html>

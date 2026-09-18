@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Absensi Tap</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#F4F8FF;
+      --surface:#FFFFFF;
+      --ink:#12345B;
+      --ink-soft:#5D7592;
+      --line:#D7E5F5;
+
+      --primary:#1976D2;
+      --primary-dark:#0D47A1;
+      --primary-soft:#E3F2FD;
+
+      --present:#1976D2;
+      --present-soft:#E3F2FD;
+
+      --late:#1565C0;
+      --late-soft:#E1F0FF;
+
+      --absent:#D32F2F;
+      --absent-soft:#FFEBEE;
+    }
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'IBM Plex Sans',sans-serif;
+    }
+
+    body{
+      background:var(--bg);
+      color:var(--ink);
+      min-height:100vh;
+    }
+
+    .app{
+      max-width:1100px;
+      margin:auto;
+      padding:28px 20px 60px;
+    }
+
+    /* HEADER */
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background:white;
+      padding:18px 20px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      margin-bottom:24px;
+      box-shadow:0 4px 15px rgb(88, 172, 255);
+    }
+
+    .profile{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .profile-img{
+      width:68px;
+      height:68px;
+      object-fit:cover;
+      border-radius:50%;
+      border:3px solid var(--primary);
+    }
+
+    .title-block h1{
+      font-size:28px;
+      color:var(--primary-dark);
+      margin-bottom:4px;
+    }
+
+    .title-block input{
+      border:none;
+      outline:none;
+      background:transparent;
+      color:var(--ink-soft);
+      font-size:14px;
+    }
+
+    .clock{
+      text-align:right;
+    }
+
+    .clock .time{
+      font-size:26px;
+      font-weight:600;
+      color:var(--primary-dark);
+    }
+
+    .clock .date{
+      font-size:13px;
+      color:var(--ink-soft);
+    }
+
+    /* GRID */
+    .grid{
+      display:grid;
+      grid-template-columns:1.1fr 1.4fr;
+      gap:20px;
+    }
+
+    .card{
+      background:white;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:20px;
+      box-shadow:0 4px 15px rgba(25, 118, 210, 0.849);
+    }
+
+    /* SCAN */
+    .scan-zone{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .scan-zone h2{
+      font-size:15px;
+      color:var(--ink-soft);
+    }
+
+    .scan-input{
+      width:100%;
+      padding:16px 14px;
+      font-size:18px;
+      border:1.5px solid var(--line);
+      border-radius:10px;
+      outline:none;
+      color:var(--ink);
+      font-family:'IBM Plex Mono',monospace;
+    }
+
+    .scan-input:focus{
+      border-color:var(--primary);
+      box-shadow:0 0 0 3px var(--primary-soft);
+    }
+
+    .hint{
+      font-size:12.5px;
+      color:var(--ink-soft);
+      line-height:1.5;
+    }
+
+    /* HASIL */
+    .result{
+      min-height:190px;
+      border-radius:12px;
+      padding:18px;
+      display:flex;
+      align-items:center;
+      gap:14px;
+      background:var(--bg);
+      border:1px dashed var(--line);
+      transition:.25s;
+    }
+
+    .result.ok{
+      background:var(--present-soft);
+      border:1px solid var(--present);
+    }
+
+    .result.late{
+      background:var(--late-soft);
+      border:1px solid var(--late);
+    }
+
+    .result.err{
+      background:var(--absent-soft);
+      border:1px solid var(--absent);
+    }
+
+    /* FOTO SISWA */
+    .student-photo{
+      width:68px;
+      height:68px;
+      border-radius:50%;
+      object-fit:cover;
+      border:3px solid var(--primary);
+      flex-shrink:0;
+      background:white;
+    }
+
+    /* AVATAR ERROR */
+    .avatar{
+      width:55px;
+      height:55px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:white;
+      background:var(--primary);
+      font-size:18px;
+      font-weight:600;
+      flex-shrink:0;
+    }
+
+    /* TEXT */
+    .result-text{
+      flex:1;
+      min-width:0;
+    }
+
+    .result-text .name{
+      font-size:18px;
+      font-weight:600;
+    }
+
+    .result-text .sub{
+      font-size:13px;
+      color:var(--ink-soft);
+      margin-top:3px;
+    }
+
+    .ok-text{
+      color:var(--present) !important;
+    }
+
+    .late-text{
+      color:var(--late) !important;
+    }
+
+    .err-text{
+      color:var(--absent) !important;
+    }
+
+    /* BIODATA */
+    .student-details{
+      margin-top:11px;
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+      font-size:12px;
+    }
+
+    .student-details div{
+      display:flex;
+      gap:8px;
+    }
+
+    .student-details span{
+      width:55px;
+      color:var(--ink-soft);
+    }
+
+    .student-details b{
+      color:var(--ink);
+      font-weight:600;
+    }
+
+    /* BUTTON */
+    .roster-toggle{
+      background:white;
+      border:1px solid var(--line);
+      border-radius:8px;
+      padding:8px 12px;
+      font-size:13px;
+      cursor:pointer;
+      color:var(--ink-soft);
+    }
+
+    .roster-toggle:hover{
+      border-color:var(--primary);
+      color:var(--primary);
+      background:var(--primary-soft);
+    }
+
+    .manual-list{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+      gap:8px;
+      margin-top:6px;
+    }
+
+    .manual-list button{
+      padding:8px;
+      border-radius:8px;
+      border:1px solid var(--line);
+      background:white;
+      cursor:pointer;
+      text-align:left;
+    }
+
+    .manual-list button:hover{
+      background:var(--primary-soft);
+      border-color:var(--primary);
+    }
+
+    .id-mono{
+      display:block;
+      font-size:11px;
+      color:var(--ink-soft);
+      font-family:'IBM Plex Mono',monospace;
+    }
+
+    /* TABLE */
+    .list-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:12px;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .list-header h2{
+      font-size:15px;
+      color:var(--ink-soft);
+    }
+
+    .actions{
+      display:flex;
+      gap:8px;
+    }
+
+    .actions input{
+      padding:6px 8px;
+      border:1px solid var(--line);
+      border-radius:8px;
+    }
+
+    .btn{
+      background:var(--primary);
+      color:white;
+      border:none;
+      padding:8px 14px;
+      border-radius:8px;
+      cursor:pointer;
+    }
+
+    .btn:hover{
+      background:var(--primary-dark);
+    }
+
+    .btn.ghost{
+      background:white;
+      color:var(--ink-soft);
+      border:1px solid var(--line);
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:13px;
+    }
+
+    th{
+      text-align:left;
+      color:var(--ink-soft);
+      font-size:11px;
+      padding:8px 6px;
+      border-bottom:1px solid var(--line);
+    }
+
+    td{
+      padding:9px 6px;
+      border-bottom:1px solid var(--line);
+    }
+
+    .status-pill{
+      padding:2px 9px;
+      border-radius:20px;
+      font-size:11px;
+    }
+
+    .status-pill.hadir{
+      background:var(--present-soft);
+      color:var(--present);
+    }
+
+    .status-pill.telat{
+      background:var(--late-soft);
+      color:var(--late);
+    }
+
+    .empty-row td{
+      text-align:center;
+      padding:25px;
+      color:var(--ink-soft);
+    }
+
+    .summary{
+      display:flex;
+      gap:15px;
+      margin-top:14px;
+      color:var(--ink-soft);
+      font-size:12px;
+    }
+
+    .summary b{
+      color:var(--primary-dark);
+    }
+
+    /* ROSTER */
+    .roster-panel{
+      margin-top:18px;
+    }
+
+    .roster-row{
+      display:grid;
+      grid-template-columns:70px 1fr 1fr 32px;
+      gap:8px;
+      margin-bottom:6px;
+    }
+
+    .roster-row input{
+      padding:6px 8px;
+      border:1px solid var(--line);
+      border-radius:6px;
+    }
+
+    .roster-row button{
+      border:none;
+      background:none;
+      color:var(--absent);
+      cursor:pointer;
+    }
+
+    /* RESPONSIVE */
+    @media(max-width:820px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media(max-width:600px){
+      .app{
+        padding:15px 12px 40px;
+      }
+
+      header{
+        align-items:flex-start;
+      }
+
+      .profile-img{
+        width:55px;
+        height:55px;
+      }
+
+      .title-block h1{
+        font-size:22px;
+      }
+
+      .clock .time{
+        font-size:21px;
+      }
+
+      .result{
+        align-items:flex-start;
+        flex-wrap:wrap;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header>
+
+    <div class="profile">
+
+      <img
+        src="nusteng.jpeg"
+        class="profile-img"
+        alt="Foto Profil"
+        onerror="this.style.display='none'"
+      >
+
+      <div class="title-block">
+
+        <h1>Absensi Tap</h1>
+
+        <input
+          type="text"
+          value="XI RPL"
+          aria-label="Kelas"
+        >
+
+      </div>
+
+    </div>
+
+    <div class="clock">
+
+      <div
+        class="time"
+        id="clockTime"
+      >
+        00:00:00
+      </div>
+
+      <div
+        class="date"
+        id="clockDate"
+      >
+        -
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- GRID -->
+  <div class="grid">
+
+    <!-- SCAN CARD -->
+    <div class="card scan-zone">
+
+      <h2>
+        Scan / Tap Kartu Siswa
+      </h2>
+
+      <input
+        id="scanInput"
+        class="scan-input"
+        type="text"
+        placeholder="Masukkan ID kartu..."
+        autocomplete="off"
+      >
+
+      <p class="hint">
+        Masukkan ID siswa lalu tekan Enter untuk melakukan absensi.
+      </p>
+
+
+      <!-- HASIL ABSENSI -->
+      <div
+        id="result"
+        class="result"
+      >
+
+        <div class="avatar">
+          ?
+        </div>
+
+        <div class="result-text">
+
+          <div class="name">
+            Silakan Tap Kartu
+          </div>
+
+          <div class="sub">
+            Tempelkan kartu siswa untuk melakukan absensi
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <button
+        class="roster-toggle"
+        id="toggleManual"
+      >
+        Tampilkan Daftar Siswa
+      </button>
+
+
+      <div
+        id="manualList"
+        class="manual-list"
+        style="display:none"
+      ></div>
+
+    </div>
+
+
+    <!-- ATTENDANCE -->
+    <div class="card">
+
+      <div class="list-header">
+
+        <h2>
+          Daftar Kehadiran
+        </h2>
+
+        <div class="actions">
+
+          <input
+            type="date"
+            id="dateFilter"
+          >
+
+          <button
+            class="btn"
+            id="exportCsv"
+          >
+            Export CSV
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Waktu</th>
+            <th>ID</th>
+            <th>Nama</th>
+            <th>Status</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="attendanceBody">
+
+          <tr class="empty-row">
+
+            <td colspan="4">
+              Belum ada siswa yang tap
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+
+      <div
+        id="summaryLine"
+        class="summary"
+      ></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ROSTER -->
+  <div class="card roster-panel">
+
+    <div class="list-header">
+
+      <h2>
+        Data Siswa
+      </h2>
+
+      <button
+        class="roster-toggle"
+        id="toggleRoster"
+      >
+        Kelola Data Siswa
+      </button>
+
+    </div>
+
+
+    <div
+      id="rosterPanel"
+      style="display:none"
+    >
+
+      <div id="rosterRows"></div>
+
+      <button
+        class="btn"
+        id="addRosterRow"
+      >
+        + Tambah Siswa
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+  /* =========================
+     DATA SISWA
+  ========================= */
+
+  const defaultRoster = [
+
+    {
+      id:'1001',
+      name:'Prasetyo Dwi santoso',
+      photo:'pras.jpeg',
+      in:'06:45',
+      class:'XI RPL',
+      major:'RPL'
+    },
+
+    {
+      id:'1002',
+      name:'Fitra varel aqiela zilqy',
+      photo:'parel.jpeg',
+      in:'06:45',
+      class:'XI RPL',
+      major:'RPL'
+    },
+
+    {
+      id:'1003',
+      name:'Raina Althoofhani',
+      photo:'raina.jpeg',
+      in:'06:45',
+      class:'XI RPL',
+      major:'RPL'
+    },
+
+    {
+      id:'1004',
+      name:'Tristan pandya nanggala',
+      photo:'trisduy.jpeg',
+      in:'06:45',
+      class:'XI RPL',
+      major:'RPL'
+    },
+
+    {
+      id:'1005',
+      name:'Alfaz Alfaruk',
+      photo:'alpas.jpeg',
+      in:'06:45',
+      class:'XI RPL',
+      major:'RPL'
+    }
+
+  ];
+
+
+  let roster = [];
+
+  let attendance = [];
+
+  let currentDate = todayStr();
+
+
+  /* =========================
+     STORAGE
+  ========================= */
+
+  async function storageGet(key){
+
+    try{
+
+      if(
+        window.storage &&
+        typeof window.storage.get === 'function'
+      ){
+
+        const result =
+          await window.storage.get(key);
+
+        if(result && result.value){
+          return JSON.parse(result.value);
+        }
+
+      }
+
+    }catch(error){
+
+      console.log(
+        'Storage tidak tersedia:',
+        error
+      );
+
+    }
+
+    return null;
+
+  }
+
+
+  async function storageSet(key,value){
+
+    try{
+
+      if(
+        window.storage &&
+        typeof window.storage.set === 'function'
+      ){
+
+        await window.storage.set(
+          key,
+          JSON.stringify(value)
+        );
+
+      }
+
+    }catch(error){
+
+      console.log(
+        'Gagal menyimpan:',
+        error
+      );
+
+    }
+
+  }
+
+
+  /* =========================
+     TANGGAL
+  ========================= */
+
+  function todayStr(){
+
+    const d =
+      new Date();
+
+    return [
+      d.getFullYear(),
+      String(
+        d.getMonth()+1
+      ).padStart(2,'0'),
+      String(
+        d.getDate()
+      ).padStart(2,'0')
+    ].join('-');
+
+  }
+
+
+  /* =========================
+     LOAD ROSTER
+  ========================= */
+
+  async function loadRoster(){
+
+    const saved =
+      await storageGet(
+        'absensi_roster'
+      );
+
+
+    if(
+      Array.isArray(saved) &&
+      saved.length
+    ){
+
+      roster = saved;
+
+    }else{
+
+      roster =
+        JSON.parse(
+          JSON.stringify(
+            defaultRoster
+          )
+        );
+
+      await saveRoster();
+
+    }
+
+    renderRosterPanel();
+
+    renderManualList();
+
+  }
+
+
+  async function saveRoster(){
+
+    await storageSet(
+      'absensi_roster',
+      roster
+    );
+
+  }
+
+
+  /* =========================
+     ATTENDANCE STORAGE
+  ========================= */
+
+  async function loadAttendance(date){
+
+    const saved =
+      await storageGet(
+        'absensi_' + date
+      );
+
+
+    attendance =
+      Array.isArray(saved)
+        ? saved
+        : [];
+
+
+    renderAttendance();
+
+  }
+
+
+  async function saveAttendance(){
+
+    await storageSet(
+      'absensi_' + currentDate,
+      attendance
+    );
+
+  }
+
+
+  /* =========================
+     STATUS
+  ========================= */
+
+  function statusFor(
+    student,
+    time
+  ){
+
+    const batas =
+      student.in || '06:45';
+
+
+    return time <= batas
+      ? 'Hadir'
+      : 'Telat';
+
+  }
+
+
+  /* =========================
+     RECORD TAP
+  ========================= */
+
+  async function recordTap(id){
+
+    id =
+      String(id).trim();
+
+
+    const student =
+      roster.find(
+        s =>
+          String(s.id) === id
+      );
+
+
+    const result =
+      document.getElementById(
+        'result'
+      );
+
+
+    /* ID TIDAK DITEMUKAN */
+
+    if(!student){
+
+      result.className =
+        'result err';
+
+
+      result.innerHTML = `
+
+        <div class="avatar">
+          !
+        </div>
+
+        <div class="result-text">
+
+          <div class="name err-text">
+            Kartu Tidak Dikenal
+          </div>
+
+          <div class="sub">
+            ID ${id} tidak ditemukan dalam data siswa.
+          </div>
+
+        </div>
+
+      `;
+
+      return;
+
+    }
+
+
+    const now =
+      new Date();
+
+
+    const time =
+      now.toTimeString()
+        .slice(0,5);
+
+
+    /* CEK SUDAH ABSEN */
+
+    const already =
+      attendance.some(
+        a =>
+          String(a.id) === id
+      );
+
+
+    if(already){
+
+      showSuccess(
+        student,
+        time,
+        statusFor(
+          student,
+          time
+        ),
+        true
+      );
+
+      return;
+
+    }
+
+
+    const status =
+      statusFor(
+        student,
+        time
+      );
+
+
+    attendance.push({
+
+      id:
+        student.id,
+
+      name:
+        student.name,
+
+      time:
+        time,
+
+      status:
+        status
+
+    });
+
+
+    await saveAttendance();
+
+    renderAttendance();
+
+
+    showSuccess(
+      student,
+      time,
+      status,
+      false
+    );
+
+  }
+
+
+  /* =========================
+     HASIL SUKSES
+  ========================= */
+
+  function showSuccess(
+    student,
+    time,
+    status,
+    already
+  ){
+
+    const result =
+      document.getElementById(
+        'result'
+      );
+
+
+    result.className =
+      status === 'Telat'
+        ? 'result late'
+        : 'result ok';
+
+
+    result.innerHTML = `
+
+      <!-- FOTO SISWA -->
+
+      <img
+        class="student-photo"
+        src="${student.photo || 'pras.jpeg'}"
+        alt="Foto ${student.name}"
+        onerror="this.src='pras.jpeg'"
+      >
+
+
+      <!-- BIODATA -->
+
+      <div class="result-text">
+
+        <div class="name">
+
+          ${
+            already
+              ? 'Sudah Ditap'
+              : 'Berhasil Ditap'
+          }
+
+        </div>
+
+
+        <div
+          class="
+            sub
+            ${
+              status === 'Telat'
+                ? 'late-text'
+                : 'ok-text'
+            }
+          "
+        >
+
+          ${
+            already
+              ? `Absensi sebelumnya pukul ${time}`
+              : `Absensi berhasil dicatat pukul ${time}`
+          }
+
+        </div>
+
+
+        <div class="student-details">
+
+          <div>
+
+            <span>
+              Nama
+            </span>
+
+            <b>
+              ${student.name}
+            </b>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Kelas
+            </span>
+
+            <b>
+              ${student.class || 'XI RPL'}
+            </b>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Jurusan
+            </span>
+
+            <b>
+              ${
+                student.major ||
+                'Rekayasa Perangkat Lunak'
+              }
+            </b>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Waktu
+            </span>
+
+            <b>
+              ${time}
+            </b>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Status
+            </span>
+
+            <b>
+              ${status}
+            </b>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+
+  /* =========================
+     RENDER ATTENDANCE
+  ========================= */
+
+  function renderAttendance(){
+
+    const body =
+      document.getElementById(
+        'attendanceBody'
+      );
+
+
+    const sorted =
+      [...attendance].sort(
+        (a,b) =>
+          a.time.localeCompare(
+            b.time
+          )
+      );
+
+
+    if(sorted.length === 0){
+
+      body.innerHTML = `
+
+        <tr class="empty-row">
+
+          <td colspan="4">
+            Belum ada siswa yang tap
+            pada tanggal ini
+          </td>
+
+        </tr>
+
+      `;
+
+    }else{
+
+      body.innerHTML =
+        sorted.map(
+          a => `
+
+            <tr>
+
+              <td>
+                ${a.time}
+              </td>
+
+              <td>
+                ${a.id}
+              </td>
+
+              <td>
+                ${a.name}
+              </td>
+
+              <td>
+
+                <span
+                  class="
+                    status-pill
+                    ${
+                      a.status === 'Telat'
+                        ? 'telat'
+                        : 'hadir'
+                    }
+                  "
+                >
+                  ${a.status}
+                </span>
+
+              </td>
+
+            </tr>
+
+          `
+        ).join('');
+
+    }
+
+
+    const hadir =
+      attendance.filter(
+        a =>
+          a.status === 'Hadir'
+      ).length;
+
+
+    const telat =
+      attendance.filter(
+        a =>
+          a.status === 'Telat'
+      ).length;
+
+
+    const belum =
+      roster.length -
+      attendance.length;
+
+
+    document.getElementById(
+      'summaryLine'
+    ).innerHTML = `
+
+      <span>
+        <b>${hadir}</b>
+        hadir
+      </span>
+
+      <span>
+        <b>${telat}</b>
+        telat
+      </span>
+
+      <span>
+        <b>${Math.max(belum,0)}</b>
+        belum tap
+      </span>
+
+    `;
+
+  }
+
+
+  /* =========================
+     MANUAL LIST
+  ========================= */
+
+  function renderManualList(){
+
+    const list =
+      document.getElementById(
+        'manualList'
+      );
+
+
+    list.innerHTML =
+      roster.map(
+        s => `
+
+          <button data-id="${s.id}">
+
+            ${s.name}
+
+            <span class="id-mono">
+              ${s.id}
+            </span>
+
+          </button>
+
+        `
+      ).join('');
+
+
+    list
+      .querySelectorAll('button')
+      .forEach(
+        btn => {
+
+          btn.addEventListener(
+            'click',
+            () =>
+              recordTap(
+                btn.dataset.id
+              )
+          );
+
+        }
+      );
+
+  }
+
+
+  /* =========================
+     ROSTER PANEL
+  ========================= */
+
+  function renderRosterPanel(){
+
+    const rows =
+      document.getElementById(
+        'rosterRows'
+      );
+
+
+    rows.innerHTML =
+      roster.map(
+        (s,i) => `
+
+          <div
+            class="roster-row"
+            data-idx="${i}"
+          >
+
+            <input
+              class="id-field"
+              value="${s.id}"
+            >
+
+            <input
+              class="name-field"
+              value="${s.name}"
+            >
+
+            <input
+              class="in-field"
+              value="${s.in || ''}"
+              placeholder="07:00"
+            >
+
+            <button
+              class="remove-row"
+            >
+              ×
+            </button>
+
+          </div>
+
+        `
+      ).join('');
+
+
+    rows
+      .querySelectorAll('.roster-row')
+      .forEach(
+        row => {
+
+          const idx =
+            Number(
+              row.dataset.idx
+            );
+
+
+          row
+            .querySelector(
+              '.id-field'
+            )
+            .addEventListener(
+              'change',
+              async e => {
+
+                roster[idx].id =
+                  e.target.value.trim();
+
+                await saveRoster();
+
+                renderManualList();
+
+              }
+            );
+
+
+          row
+            .querySelector(
+              '.name-field'
+            )
+            .addEventListener(
+              'change',
+              async e => {
+
+                roster[idx].name =
+                  e.target.value.trim();
+
+                await saveRoster();
+
+                renderManualList();
+
+              }
+            );
+
+
+          row
+            .querySelector(
+              '.in-field'
+            )
+            .addEventListener(
+              'change',
+              async e => {
+
+                roster[idx].in =
+                  e.target.value.trim();
+
+                await saveRoster();
+
+              }
+            );
+
+
+          row
+            .querySelector(
+              '.remove-row'
+            )
+            .addEventListener(
+              'click',
+              async () => {
+
+                roster.splice(
+                  idx,
+                  1
+                );
+
+                await saveRoster();
+
+                renderRosterPanel();
+
+                renderManualList();
+
+              }
+            );
+
+        }
+      );
+
+  }
+
+
+  /* =========================
+     TAMBAH SISWA
+  ========================= */
+
+  document
+    .getElementById(
+      'addRosterRow'
+    )
+    .addEventListener(
+      'click',
+      async () => {
+
+        roster.push({
+
+          id:
+            String(
+              1000 +
+              roster.length +
+              1
+            ),
+
+          name:
+            'Siswa Baru',
+
+          photo:
+            'siswa-baru.jpeg',
+
+          in:
+            '07:00',
+
+          class:
+            'XI RPL',
+
+          major:
+            'Rekayasa Perangkat Lunak'
+
+        });
+
+
+        await saveRoster();
+
+        renderRosterPanel();
+
+        renderManualList();
+
+      }
+    );
+
+
+  /* =========================
+     INPUT SCAN
+  ========================= */
+
+  document
+    .getElementById(
+      'scanInput'
+    )
+    .addEventListener(
+      'keydown',
+      async e => {
+
+        if(e.key === 'Enter'){
+
+          const value =
+            e.target.value.trim();
+
+
+          if(value){
+
+            await recordTap(
+              value
+            );
+
+            e.target.value = '';
+
+          }
+
+        }
+
+      }
+    );
+
+
+  /* =========================
+     TOGGLE MANUAL
+  ========================= */
+
+  document
+    .getElementById(
+      'toggleManual'
+    )
+    .addEventListener(
+      'click',
+      () => {
+
+        const list =
+          document.getElementById(
+            'manualList'
+          );
+
+
+        list.style.display =
+          list.style.display === 'none'
+            ? 'grid'
+            : 'none';
+
+      }
+    );
+
+
+  /* =========================
+     TOGGLE ROSTER
+  ========================= */
+
+  document
+    .getElementById(
+      'toggleRoster'
+    )
+    .addEventListener(
+      'click',
+      () => {
+
+        const panel =
+          document.getElementById(
+            'rosterPanel'
+          );
+
+
+        panel.style.display =
+          panel.style.display === 'none'
+            ? 'block'
+            : 'none';
+
+      }
+    );
+
+
+  /* =========================
+     FILTER TANGGAL
+  ========================= */
+
+  document
+    .getElementById(
+      'dateFilter'
+    )
+    .addEventListener(
+      'change',
+      async e => {
+
+        currentDate =
+          e.target.value ||
+          todayStr();
+
+
+        await loadAttendance(
+          currentDate
+        );
+
+      }
+    );
+
+
+  /* =========================
+     EXPORT CSV
+  ========================= */
+
+  document
+    .getElementById(
+      'exportCsv'
+    )
+    .addEventListener(
+      'click',
+      () => {
+
+        const rows = [
+
+          [
+            'Tanggal',
+            'Waktu',
+            'ID',
+            'Nama',
+            'Status'
+          ]
+
+        ];
+
+
+        attendance.forEach(
+          a => {
+
+            rows.push([
+
+              currentDate,
+
+              a.time,
+
+              a.id,
+
+              a.name,
+
+              a.status
+
+            ]);
+
+          }
+        );
+
+
+        const csv =
+          rows
+            .map(
+              r =>
+                r.map(
+                  v =>
+                    `"${String(v)
+                      .replace(
+                        /"/g,
+                        '""'
+                      )}"`
+                ).join(',')
+            )
+            .join('\n');
+
+
+        const blob =
+          new Blob(
+            [csv],
+            {
+              type:
+                'text/csv;charset=utf-8;'
+            }
+          );
+
+
+        const url =
+          URL.createObjectURL(
+            blob
+          );
+
+
+        const a =
+          document.createElement(
+            'a'
+          );
+
+
+        a.href =
+          url;
+
+
+        a.download =
+          `absensi_${currentDate}.csv`;
+
+
+        a.click();
+
+
+        URL.revokeObjectURL(
+          url
+        );
+
+      }
+    );
+
+
+  /* =========================
+     JAM DIGITAL
+  ========================= */
+
+  function tickClock(){
+
+    const now =
+      new Date();
+
+
+    document.getElementById(
+      'clockTime'
+    ).textContent =
+      now
+        .toTimeString()
+        .slice(0,8);
+
+
+    document.getElementById(
+      'clockDate'
+    ).textContent =
+      now.toLocaleDateString(
+        'id-ID',
+        {
+          weekday:'long',
+          year:'numeric',
+          month:'long',
+          day:'numeric'
+        }
+      );
+
+  }
+
+
+  setInterval(
+    tickClock,
+    1000
+  );
+
+
+  tickClock();
+
+
+  /* =========================
+     INIT
+  ========================= */
+
+  (async function init(){
+
+    document.getElementById(
+      'dateFilter'
+    ).value =
+      currentDate;
+
+
+    await loadRoster();
+
+
+    await loadAttendance(
+      currentDate
+    );
+
+
+    document.getElementById(
+      'scanInput'
+    ).focus();
+
+  })();
+
+</script>
+
+</body>
+</html>
